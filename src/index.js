@@ -1,4 +1,3 @@
-const { response } = require("express")
 const express = require("express")
 const { v4: uuidv4 } = require("uuid")
 
@@ -16,7 +15,6 @@ function verifyIfExistsAccountCPF(request, response, next) {
   if (!customer) {
     return response.status(400).json({ error: "Customer not found!" })
   }
-
   request.customer = customer
 
   return next()
@@ -136,5 +134,17 @@ app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
 
 })
 
+app.get("/accounts", (request, response) => {
+  response.json(customers)
+})
+
+
+app.delete("/account", verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+
+  customers.splice(customers.indexOf(customer), 1)
+
+  return response.status(200).json(customers)
+})
 
 app.listen(3333, console.log('Server is running on "http://localhost:3333"'))
